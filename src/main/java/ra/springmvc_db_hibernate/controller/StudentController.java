@@ -43,13 +43,17 @@ public class StudentController {
         }
     }
 
+
     @RequestMapping(value ={"/","/loadStudents"})
-    public String loadStudents(Model model){
-        List<Student> list = studentDAO.getStudents();
+    public String loadStudents(Model model, @RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "2") int pageSize){
+        List<Student> list = studentDAO.getStudents(pageNumber, pageSize);
+        Long totalStudents = studentDAO.count();
+        int totalPages = (int) Math.ceil((double) totalStudents / pageSize);
         model.addAttribute("list",list);
+        model.addAttribute("pageNumber",pageNumber);
+        model.addAttribute("totalPages", totalPages);
         return "listStudent";
     }
-
 
     @GetMapping("/showFormForUpdate")
     public String showFormForUpdate(Model model,@RequestParam("id") Integer id) {

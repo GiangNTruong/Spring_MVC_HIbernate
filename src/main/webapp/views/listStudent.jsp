@@ -42,12 +42,26 @@
                 </tr>
             </c:forEach>
         </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <c:forEach begin="1" end="${totalPages}" var="page">
+                    <c:choose>
+                        <c:when test="${page == pageNumber}">
+                            <li class="page-item active"><a class="page-link" href="#">${page}</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/loadStudents?pageNumber=${page}&pageSize=${pageSize}">${page}</a></li>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </ul>
+        </nav>
+
         <a href="initInsertStudent">Insert Student</a>
         <form action="${pageContext.request.contextPath}/search" method="get">
             <input type="text" name="searchName" placeholder="Search by name">
             <input type="submit" value="Search">
         </form>
-
     </div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

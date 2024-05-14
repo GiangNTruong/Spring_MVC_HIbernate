@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ra.springmvc_db_hibernate.dao.StudentDAO;
 import ra.springmvc_db_hibernate.entity.Student;
-
+import org.hibernate.query.Query;
 import java.util.List;
 
 @Repository
@@ -14,11 +14,28 @@ public class StudentDAOImpl implements StudentDAO {
     @Autowired
     private SessionFactory sessionFactory;
 
+//    @Override
+//    public List<Student> getStudents() {
+//        Session session = sessionFactory.openSession();
+//        try{
+//            List list = session.createQuery("from Student").list();
+//            return list;
+//        }catch (Exception ex){
+//            ex.printStackTrace();
+//        }finally {
+//            session.close();
+//        }
+//        return null;
+//    }
+
     @Override
-    public List<Student> getStudents() {
+    public List<Student> getStudents(Integer pageNumber, Integer pageSize) {
         Session session = sessionFactory.openSession();
         try{
-            List list = session.createQuery("from Student").list();
+            Query query = session.createQuery("from Student");
+            query.setFirstResult((pageNumber-1) * pageSize);
+            query.setMaxResults(pageSize);
+            List<Student> list = query.list();
             return list;
         }catch (Exception ex){
             ex.printStackTrace();
@@ -113,4 +130,19 @@ public class StudentDAOImpl implements StudentDAO {
         }
         return null;
     }
+
+    @Override
+    public Long count() {
+        Session session = sessionFactory.openSession();
+        try{
+            Long count = (Long) session.createQuery("select count(*) from Student").uniqueResult();
+            return count;
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }finally {
+            session.close();
+        }
+        return null;
+    }
+
 }
